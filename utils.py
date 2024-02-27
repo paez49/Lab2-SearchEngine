@@ -33,13 +33,14 @@ class UtilRequests:
             self.driver.quit()
             self.driver = None
 
-    def get_response(self, url: str) -> requests.Response:
+    def get_page_selenium(self, url: str) -> requests.Response:
 
         try:
             self.driver.get(url)
         except (RequestException, ConnectionError, HTTPError, Timeout):
             return None
-
+    def get_response(self,url):
+        return requests.get(url)
     def read_response(self, response: requests.Response) -> str:
         """Obtain html from a response object.
 
@@ -93,7 +94,7 @@ class UtilURL:
         if self.is_absolute_url(url2):
             return url2
         else:
-            return url1 + url2
+            return f"https://{url1}{url2}".replace(" ","")
         # return None
 
     def is_url_ok_to_follow(self, url: str, domain: str) -> bool:
