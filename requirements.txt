@@ -1,3 +1,7 @@
 beautifulsoup4
 html5lib
 requests
+selenium
+webdriver_manager
+pandas
+nltk
