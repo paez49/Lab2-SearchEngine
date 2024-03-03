@@ -102,7 +102,7 @@ class UtilURL:
                 url_res = f"{url1}{url2}"
             else:
                 url_res = f"{url1}/{url2}"
-                
+
         return f"https://{url_res}".replace(" ", "")
 
     def is_url_ok_to_follow(self, url: str, domain: str) -> bool:
@@ -133,25 +133,28 @@ class UtilText:
 
         cleaned_words = []
         for word in words:
-            cleaned_word = re.sub(r'[!.,:]+$', '', word)
-            if re.match(r'^[A-Za-z][A-Za-z0-9_]+$', cleaned_word) and len(cleaned_word) > 3:
+            cleaned_word = re.sub(r"[!.,:]+$", "", word)
+            if (
+                re.match(r"^[A-Za-z][A-Za-z0-9_]+$", cleaned_word)
+                and len(cleaned_word) > 4
+            ):
                 cleaned_words.append(cleaned_word.lower())
         return cleaned_words
-        
-    def most_frequent_words(self,words:List[str]):
+
+    def most_frequent_words(self, words: List[str]):
         word_count = {}
         for word in words:
             if word in word_count:
                 word_count[word] += 1
             else:
                 word_count[word] = 1
-        sorted_word_count = dict(sorted(word_count.items(), key=lambda x: x[1], reverse=True))
+        sorted_word_count = dict(
+            sorted(word_count.items(), key=lambda x: x[1], reverse=True)
+        )
         with open("files/frequences.json", "w") as file:
             json.dump(sorted_word_count, file, indent=2)
-    
-    def get_useless_words(self):
-        with open("files/frequences.json", 'r') as file:
-            dict_useless = json.load(file)
-        return [key for key,value in dict_useless.items() if value > 100]
 
-            
+    def get_useless_words(self):
+        with open("files/frequences.json", "r") as file:
+            dict_useless = json.load(file)
+        return [key for key, value in dict_useless.items() if value > 100]
