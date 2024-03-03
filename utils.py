@@ -1,7 +1,8 @@
 import requests
 from requests.exceptions import RequestException, ConnectionError, HTTPError, Timeout
-from typing import Optional
+from typing import Optional, List
 import re
+import json
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -39,8 +40,10 @@ class UtilRequests:
             self.driver.get(url)
         except (RequestException, ConnectionError, HTTPError, Timeout):
             return None
-    def get_response(self,url):
+
+    def get_response(self, url):
         return requests.get(url)
+
     def read_response(self, response: requests.Response) -> str:
         """Obtain html from a response object.
 
@@ -94,8 +97,13 @@ class UtilURL:
         if self.is_absolute_url(url2):
             return url2
         else:
-            return f"https://{url1}{url2}".replace(" ","")
-        # return None
+            url_res = ""
+            if "/" in url2:
+                url_res = f"{url1}{url2}"
+            else:
+                url_res = f"{url1}/{url2}"
+                
+        return f"https://{url_res}".replace(" ", "")
 
     def is_url_ok_to_follow(self, url: str, domain: str) -> bool:
         """Validate if a url is valid.
@@ -117,3 +125,33 @@ class UtilURL:
         if not re.match(pattern, url):
             return False
         return True
+
+
+class UtilText:
+    def get_useful_words(self, text: str):
+        words = re.split(r"\s+", text)
+
+        cleaned_words = []
+        for word in words:
+            cleaned_word = re.sub(r'[!.,:]+$', '', word)
+            if re.match(r'^[A-Za-z][A-Za-z0-9_]+$', cleaned_word) and len(cleaned_word) > 3:
+                cleaned_words.append(cleaned_word.lower())
+        return cleaned_words
+        
+    def most_frequent_words(self,words:List[str]):
+        word_count = {}
+        for word in words:
+            if word in word_count:
+                word_count[word] += 1
+            else:
+                word_count[word] = 1
+        sorted_word_count = dict(sorted(word_count.items(), key=lambda x: x[1], reverse=True))
+        with open("files/frequences.json", "w") as file:
+            json.dump(sorted_word_count, file, indent=2)
+    
+    def get_useless_words(self):
+        with open("files/frequences.json", 'r') as file:
+            dict_useless = json.load(file)
+        return [key for key,value in dict_useless.items() if value > 100]
+
+            
