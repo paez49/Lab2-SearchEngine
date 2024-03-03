@@ -81,4 +81,4 @@ class Crawler:
         with open(f"files/{json_file_name}", "w") as file:
             json.dump(courses, file, indent=2)
 
-        df.to_csv(f"files/{output_file_name}", index=False)
+        df.to_csv(f"files/{output_file_name}", index=False,sep="|")
