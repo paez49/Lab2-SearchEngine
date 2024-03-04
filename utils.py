@@ -1,6 +1,6 @@
 import requests
 from requests.exceptions import RequestException, ConnectionError, HTTPError, Timeout
-from typing import Optional, List
+from typing import Optional, List, Set
 import re
 import json
 
@@ -158,3 +158,22 @@ class UtilText:
         with open("files/frequences.json", "r") as file:
             dict_useless = json.load(file)
         return [key for key, value in dict_useless.items() if value > 100]
+
+
+class UtilSimiliraty:
+    def jaccard_similarity(set1: Set, set2: Set) -> float:
+        """
+        This function calculates the Jaccard similarity between two sets.
+        Jaccard similarity is calculated as the size of the intersection
+        of the two sets divided by the size of the union of the two sets.
+
+                Args:
+                    set1 (Set): The first set to compare.
+                    set2 (Set): The second set to compare.
+
+                Returns:
+                    float: The Jaccard similarity between the two sets.
+        """
+        intersection = set1.intersection(set2)
+        union = set1.union(set2)
+        return len(intersection) / len(union)

@@ -1,6 +1,6 @@
 # Motor de busqueda usando indexación
-- Anderson Alvarado
 - Juan Páez
+- Anderson Alvarado
 ## Obteniendo palabras que no son relevantes para el índice
 Para obtener esta lista de palabras se realizó un muestreo de los cursos, con el fin de 
 obtener la información de estos, y saber cuáles son las palabras que no son relevantes 
@@ -43,9 +43,24 @@ de estas palabras:
   "unidad": 184,
   "proyectos": 183,
   "digital": 179,
-  ...
+  //...
 }
 ```
 A criterio de los autores de este taller, las palabras que se
 repiten desde 100 veces en adelante, no genera valor al 
 indexador a construir. Por lo tanto, seran omitidas.
+## Crawler.py
+TODO
+## Search.py
+La función `find_similar_courses` busca los cursos más similares a una lista de palabras proporcionadas. La similitud se calcula utilizando la métrica de similitud de Jaccard.
+### Detalles de implementación
+
+La función primero convierte la lista de palabras en un conjunto para facilitar la comparación. Luego, agrupa el DataFrame por 'course_id' y combina todas las palabras para cada curso en un conjunto. Después, calcula la similitud de Jaccard entre el conjunto de palabras y el conjunto de palabras de cada curso. Finalmente, ordena los cursos por su similitud y devuelve los IDs de los cursos más similares.
+
+La función `search` recibe un Dataframe. Luego, utiliza la función `find_similar_courses` para encontrar los cursos más similares a las palabras proporcionadas. Finalmente, devuelve los URLs de los cursos más similares.
+
+## Compare.py
+
+La función `find_similar_two_courses` busca los cursos más similares a una lista de palabras proporcionadas. La similitud se calcula utilizando la métrica de similitud de Jaccard.
+
+La función `compare` recibe un Dataframe y luego, agrupa el DataFrame por 'course_id' y combina todas las palabras para cada curso en un conjunto. Finalmente, utiliza la función `find_similar_two_courses` para obtener un indicador de similaridad a partir de la métrica especificada.

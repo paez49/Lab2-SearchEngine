@@ -1,54 +1,39 @@
 import pandas as pd
-import numpy as np
+from utils import UtilSimiliraty
 
-"""--------------------Funciones--------------------"""
+def find_similar_two_courses(course_1: str, course_2: str, df: pd.DataFrame) -> float:
+    """This function searches for the courses most similar to a provided list of words.
 
+    Args:
+        course_1 (str): The ID of the first course to compare.
+        course_2 (str): The ID of the second course to compare.
+        df (pd.DataFrame): Dataframe with the index of courses and words.
 
-# funcion de la metrica de similutd de Jaccard
-def jaccard_similarity(set1, set2):
+    Returns:
+        float: Jaccard similarity.
     """
-    Esta función calcula la similitud de Jaccard entre dos conjuntos.
-    La similitud de Jaccard es calculada como el tamaño de la intersección de los dos conjuntos dividido por el tamaño de la unión de los dos conjuntos.
+    course_1 = df[df["course_id"] == course_1]
+    course_2 = df[df["course_id"] == course_2]
 
-    args:
-    set1 (set): El primer conjunto a comparar.
-    set2 (set): El segundo conjunto a comparar.
+    vec1 = course_1["word"].values[0]
+    vec2 = course_2["word"].values[0]
 
-    return:
-    float: La similitud de Jaccard entre los dos conjuntos.
-    """
-    intersection = set1.intersection(set2)
-    union = set1.union(set2)
-    return len(intersection) / len(union)
-
-
-def find_similar_two_courses(curso1, curso2, df):
-    # buscar los cursos en el dataframe
-    curso1 = df[df["course_id"] == curso1]
-    curso2 = df[df["course_id"] == curso2]
-    # obtener los vectores de palabras
-    vec1 = curso1["word"].values[0]
-    vec2 = curso2["word"].values[0]
-
-    jaccard_sim = jaccard_similarity(set(vec1), set(vec2))
-    # retornar el resultado
+    jaccard_sim = UtilSimiliraty.jaccard_similarity(set(vec1), set(vec2))
     return jaccard_sim
 
 
-def compare(curso1, curso2):
-    """
-    Esta función busca los cursos más similares a una lista de palabras proporcionadas.
-    La similitud se calcula utilizando la métrica de similitud de Jaccard.
+def compare(course_1: str, course_2: str, df_index: pd.DataFrame) -> float:
+    """This function searches for the courses most similar to a provided list of words.
+    Similarity is calculated using the Jaccard similarity metric.
 
-    args:
-    curso1 (int): El id del primer curso a comparar.
-    curso2 (int): El id del segundo curso a comparar.
+        Args:
+            course_1 (str): The ID of the first course to compare.
+            course_2 (str): The ID of the second course to compare.
+            df_index (pd.Dataframe): Dataframe with the index of courses and words.
 
-    return:
-    float: La similitud de Jaccard entre los dos cursos.
+        Returns:
+            float: The Jaccard similarity between the two courses.
     """
-    # crear dataframe del archivo index.csv
-    df_index = pd.read_csv("index.csv")
     courses = df_index.groupby("course_id")["word"].apply(set).reset_index()
-    similarity = find_similar_two_courses(curso1, curso2, courses)
+    similarity = find_similar_two_courses(course_1, course_2, courses)
     return similarity

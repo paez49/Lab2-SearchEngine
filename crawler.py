@@ -3,8 +3,6 @@ import json
 from bs4 import BeautifulSoup
 from utils import UtilURL, UtilRequests, UtilText
 import pandas as pd
-import re
-
 
 class Crawler:
     def __init__(self, start_url: str, domain: str):
@@ -66,7 +64,7 @@ class Crawler:
 
             useful_words = util_text.get_useful_words(text)
             useless_words = util_text.get_useless_words()
-            
+
             useful_words = list(set(useful_words))  # Drop duplicated
             for word in useful_words:
                 if not word in useless_words:
@@ -74,11 +72,13 @@ class Crawler:
                         [df, pd.DataFrame({"course_id": [course_id], "word": [word]})],
                         ignore_index=True,
                     )
-                    
+
             # all_words = all_words + useful_words
         # util_text.most_frequent_words(all_words)
 
-        with open(f"files/{json_file_name}", "w") as file:
+        with open(json_file_name, "w") as file:
             json.dump(courses, file, indent=2)
 
-        df.to_csv(f"files/{output_file_name}", index=False,sep="|")
+        df.to_csv(output_file_name, index=False, sep="|")
+
+        return df, courses
