@@ -1,8 +1,9 @@
-from typing import Dict
+from typing import Dict, Tuple
 import json
 from bs4 import BeautifulSoup
 from utils import UtilURL, UtilRequests, UtilText
 import pandas as pd
+
 
 class Crawler:
     def __init__(self, start_url: str, domain: str):
@@ -12,8 +13,18 @@ class Crawler:
         self.util_requests = UtilRequests()
 
     def get_links(self, url: str, n: int) -> Dict[str, str]:
+        """Get the links of the courses, making webscraping in the website.
+
+        Args:
+            url (str): Initial URL to start the webscraping.
+            n (int): Number of courses to get.
+
+        Returns:
+            Dict[str, str]: Dictionary with the course_id as key and the course_url as value.
+        """
         self.util_requests.open()
         self.util_requests.get_page_selenium(url)
+
         html = self.util_requests.driver.page_source
         self.util_requests.close()
 
@@ -34,13 +45,25 @@ class Crawler:
 
         return dict_courses
 
-    def go(self, n: int, json_file_name: str, output_file_name: str):
-        """Crawl the web and build the index."""
+    def go(
+        self, n: int, json_file_name: str, output_file_name: str
+    ) -> tuple[pd.DataFrame, Dict[str, str]]:
+        """Main function to start the webscraping and get the links of the courses and the words of the courses.
+
+        Args:
+            n (int): Number of courses to get.
+            json_file_name (str): json file name to save the courses links with the id.
+            output_file_name (str): csv file name to save the words of the courses.
+
+        Returns:
+            tuple[pd.DataFrame, Dict[str, str]]: Dataframe with the words of the courses and
+            the dictionary with the course_id as key and the course_url as value.
+        """
         courses = self.get_links(self.start_url, n)
 
         util_text = UtilText()
         all_words = []
-        columns = ["course_id", "word"]
+        columns = ["courseID", "courseURL","word"]
         df = pd.DataFrame(columns=columns)
 
         for course_id, url_course in courses.items():
@@ -69,7 +92,16 @@ class Crawler:
             for word in useful_words:
                 if not word in useless_words:
                     df = pd.concat(
-                        [df, pd.DataFrame({"course_id": [course_id], "word": [word]})],
+                        [
+                            df,
+                            pd.DataFrame(
+                                {
+                                    "courseID": [course_id],
+                                    "courseURL": [url_course],
+                                    "word": [word],
+                                }
+                            ),
+                        ],
                         ignore_index=True,
                     )
 

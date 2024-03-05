@@ -26,9 +26,9 @@ if __name__ == "__main__":
     keywords = input("Enter the keywords separated by commas (,): ")
     keywords = keywords.split()
 
-    print("The most similar courses are: ")
-    for course in search(keywords, df, dict_courses):
-        print(course)
+    print("The 5 most relevant courses are:")
+    for course in search(keywords, df, dict_courses)[:5]:
+        print(f"*   {course}")
 
     course_1 = input("Enter the ID of the first course to compare: ")
     course_2 = input("Enter the ID of the second course to compare: ")

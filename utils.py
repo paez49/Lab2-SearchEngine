@@ -24,24 +24,43 @@ class UtilRequests:
         self.driver = None
 
     def open(self):
+        """Open the webdriver with the chrome configuration.
+        """
         self.driver = webdriver.Chrome(
             service=Service(ChromeDriverManager().install()),
             options=self.chrome_options,
         )
 
     def close(self):
+        """Close the webdriver.
+        """
         if self.driver:
             self.driver.quit()
             self.driver = None
 
-    def get_page_selenium(self, url: str) -> requests.Response:
+    def get_page_selenium(self, url: str):
+        """Get the page with the webdriver.
 
+        Args:
+            url (str): Url to be requested.
+
+        Raises:
+            Exception: Error requesting the page.
+        """
         try:
             self.driver.get(url)
         except (RequestException, ConnectionError, HTTPError, Timeout):
-            return None
+            raise Exception("Error requesting the page.")
 
-    def get_response(self, url):
+    def get_response(self, url:str) -> requests.Response:
+        """Get the response of a request.
+
+        Args:
+            url (str): Url to be requested.
+
+        Returns:
+            requests.Response: Response object.
+        """
         return requests.get(url)
 
     def read_response(self, response: requests.Response) -> str:
@@ -128,7 +147,15 @@ class UtilURL:
 
 
 class UtilText:
-    def get_useful_words(self, text: str):
+    def get_useful_words(self, text: str) -> List[str]:
+        """Get useful words from a text, ommits words with less than 4 characters and punctuation.
+
+        Args:
+            text (str): Text to be cleaned.
+
+        Returns:
+            List[str]: List of useful words.
+        """
         words = re.split(r"\s+", text)
 
         cleaned_words = []
@@ -142,6 +169,11 @@ class UtilText:
         return cleaned_words
 
     def most_frequent_words(self, words: List[str]):
+        """Get the most frequent words from a list of words and save it in a json file.
+
+        Args:
+            words (List[str]): List of words to be analyzed.
+        """
         word_count = {}
         for word in words:
             if word in word_count:
@@ -154,7 +186,12 @@ class UtilText:
         with open("files/frequences.json", "w") as file:
             json.dump(sorted_word_count, file, indent=2)
 
-    def get_useless_words(self):
+    def get_useless_words(self) -> List[str]:
+        """Get the most frequent words from a json file and return the words that are more frequent than 100.
+
+        Returns:
+            List[str]: List of useless words.
+        """
         with open("files/frequences.json", "r") as file:
             dict_useless = json.load(file)
         return [key for key, value in dict_useless.items() if value > 100]
@@ -167,12 +204,12 @@ class UtilSimiliraty:
         Jaccard similarity is calculated as the size of the intersection
         of the two sets divided by the size of the union of the two sets.
 
-                Args:
-                    set1 (Set): The first set to compare.
-                    set2 (Set): The second set to compare.
+        Args:
+            set1 (Set): The first set to compare.
+            set2 (Set): The second set to compare.
 
-                Returns:
-                    float: The Jaccard similarity between the two sets.
+        Returns:
+            float: The Jaccard similarity between the two sets.
         """
         intersection = set1.intersection(set2)
         union = set1.union(set2)
