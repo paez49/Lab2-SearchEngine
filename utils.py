@@ -183,7 +183,7 @@ class UtilText:
         sorted_word_count = dict(
             sorted(word_count.items(), key=lambda x: x[1], reverse=True)
         )
-        with open("files/frequences.json", "w") as file:
+        with open("example_files/frequences.json", "w") as file:
             json.dump(sorted_word_count, file, indent=2)
 
     def get_useless_words(self) -> List[str]:
@@ -192,7 +192,7 @@ class UtilText:
         Returns:
             List[str]: List of useless words.
         """
-        with open("files/frequences.json", "r") as file:
+        with open("example_files/frequences.json", "r") as file:
             dict_useless = json.load(file)
         return [key for key, value in dict_useless.items() if value > 100]
 

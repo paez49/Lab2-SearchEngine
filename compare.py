@@ -1,6 +1,7 @@
 import pandas as pd
 from utils import UtilSimiliraty
 
+
 def find_similar_two_courses(course_1: str, course_2: str, df: pd.DataFrame) -> float:
     """This function searches for the courses most similar to a provided list of words.
 
@@ -12,8 +13,8 @@ def find_similar_two_courses(course_1: str, course_2: str, df: pd.DataFrame) -> 
     Returns:
         float: Jaccard similarity.
     """
-    course_1 = df[df["course_id"] == course_1]
-    course_2 = df[df["course_id"] == course_2]
+    course_1 = df[df["courseID"] == course_1]
+    course_2 = df[df["courseID"] == course_2]
 
     vec1 = course_1["word"].values[0]
     vec2 = course_2["word"].values[0]
@@ -34,6 +35,6 @@ def compare(course_1: str, course_2: str, df_index: pd.DataFrame) -> float:
         Returns:
             float: The Jaccard similarity between the two courses.
     """
-    courses = df_index.groupby("course_id")["word"].apply(set).reset_index()
+    courses = df_index.groupby("courseID")["word"].apply(set).reset_index()
     similarity = find_similar_two_courses(course_1, course_2, courses)
     return similarity

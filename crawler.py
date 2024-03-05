@@ -20,7 +20,7 @@ class Crawler:
             n (int): Number of courses to get.
 
         Returns:
-            Dict[str, str]: Dictionary with the course_id as key and the course_url as value.
+            Dict[str, str]: Dictionary with the courseID as key and the course_url as value.
         """
         self.util_requests.open()
         self.util_requests.get_page_selenium(url)
@@ -57,16 +57,16 @@ class Crawler:
 
         Returns:
             tuple[pd.DataFrame, Dict[str, str]]: Dataframe with the words of the courses and
-            the dictionary with the course_id as key and the course_url as value.
+            the dictionary with the courseID as key and the course_url as value.
         """
         courses = self.get_links(self.start_url, n)
 
         util_text = UtilText()
         all_words = []
-        columns = ["courseID", "courseURL","word"]
+        columns = ["courseID", "courseURL", "word"]
         df = pd.DataFrame(columns=columns)
 
-        for course_id, url_course in courses.items():
+        for courseID, url_course in courses.items():
             res = self.util_requests.get_response(url_course)
 
             soup = BeautifulSoup(res.content, "html.parser")
@@ -96,7 +96,7 @@ class Crawler:
                             df,
                             pd.DataFrame(
                                 {
-                                    "courseID": [course_id],
+                                    "courseID": [courseID],
                                     "courseURL": [url_course],
                                     "word": [word],
                                 }
